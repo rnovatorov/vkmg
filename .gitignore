@@ -1,0 +1,11 @@
+# Byte-code
+*.pyc
+
+# Logs
+*.log
+
+# Env vars source
+set_env_vars.sh
+
+# Certificates
+*.cer
