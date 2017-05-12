@@ -1,8 +1,16 @@
 import os
 
 
-# VK domain name
-VK_DOMAIN_NAME = "https://vk.com"
+# Browsermob-proxy binary path
+BROWSERMOB_PROXY_BIN_PATH = os.environ.get("BROWSERMOB_PROXY_BIN_PATH")
+
+
+# Firefox profile path
+FIREFOX_PROFILE_PATH = os.environ.get("FIREFOX_PROFILE_PATH")
+
+
+# VK main page url
+VK_URL = "https://vk.com"
 
 
 # VK user credentials
@@ -14,9 +22,7 @@ VK_USER_PASSWORD = os.environ.get("VK_USER_PASSWORD")
 VK_TARGET_ID = os.environ.get("VK_TARGET_ID")
 
 
-# Browsermob-proxy binary path
-BROWSERMOB_PROXY_BIN_PATH = os.environ.get("BROWSERMOB_PROXY_BIN_PATH")
-
-
-# Firefox profile path
-FIREFOX_PROFILE_PATH = os.environ.get("FIREFOX_PROFILE_PATH")
+# VK elements location
+VK_INDEX_LOGIN = "index_email"
+VK_INDEX_PASSWORD = "index_pass"
+VK_INDEX_LOGIN_BUTTON = "index_login_button"
