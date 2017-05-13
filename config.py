@@ -1,6 +1,10 @@
 import os
 
 
+# Logging directory
+LOG_DIR = "log"
+
+
 # Browsermob-proxy binary path
 BROWSERMOB_PROXY_BIN_PATH = os.environ.get("BROWSERMOB_PROXY_BIN_PATH")
 
@@ -8,19 +12,18 @@ BROWSERMOB_PROXY_BIN_PATH = os.environ.get("BROWSERMOB_PROXY_BIN_PATH")
 # Firefox profile path
 FIREFOX_PROFILE_PATH = os.environ.get("FIREFOX_PROFILE_PATH")
 
+# Webdriver wait time out
+WEBDRIVER_WAIT_TIMEOUT = 5
 
 # VK main page url
 VK_URL = "https://vk.com"
-
 
 # VK user credentials
 VK_USER_PHONE = os.environ.get("VK_USER_PHONE")
 VK_USER_PASSWORD = os.environ.get("VK_USER_PASSWORD")
 
-
 # ID of vk user whose audios are to be downloaded
 VK_TARGET_ID = os.environ.get("VK_TARGET_ID")
-
 
 # VK elements location
 VK_INDEX_LOGIN = "index_email"
