@@ -1,7 +1,8 @@
 import os
 import logging
 import subprocess
-from .exceptions import LoginFailedException, CantProceedToAudiosException
+from .exceptions import LoginFailedException, CantProceedToAudiosException,\
+                        ConfValueIsNoneException
 from .utils import pause_on_complete
 from browsermobproxy import Server
 from selenium import webdriver
@@ -63,9 +64,9 @@ class VKMusicGetter(object):
         self.wait = WebDriverWait(self.driver, self.conf.WEBDRIVER_WAIT_TIMEOUT)
 
     def check_configs(self, conf):
-        """
-        TODO: Add checking
-        """
+        for attr_name in dir(conf):
+            if getattr(conf, attr_name) is None:
+                raise ConfValueIsNoneException(attr_name)
         return bool(conf)
 
     def get_tracks(self, target_vk_user_id, number, tracks_dir):
