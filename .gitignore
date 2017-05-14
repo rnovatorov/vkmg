@@ -9,3 +9,6 @@ set_env_vars.sh
 
 # Certificates
 *.cer
+
+# Tracks output directory
+tracks/*
