@@ -64,9 +64,10 @@ class VKMusicGetter(object):
         self.wait = WebDriverWait(self.driver, self.conf.WEBDRIVER_WAIT_TIMEOUT)
 
     def check_configs(self, conf):
-        for attr_name in dir(conf):
-            if getattr(conf, attr_name) is None:
-                raise ConfValueIsNoneException(attr_name)
+        attr_names = [an for an in dir(conf) if not an.startswith("__")]
+        for an in attr_names:
+            if getattr(conf, an) is None:
+                raise ConfValueIsNoneException(an)
         return bool(conf)
 
     def get_tracks(self, target_vk_user_id, number, tracks_dir):
@@ -104,7 +105,7 @@ class VKMusicGetter(object):
             os.mkdir(performer_dir)
         cmd = ["wget", track_url, "-nv",
                "-O", os.path.join(performer_dir, "%s.mp3" % track_title),
-               "-o", os.path.join(self.conf.LOG_DIR, "wget.log")]
+               "-a", os.path.join(self.conf.LOG_DIR, "wget.log")]
         subprocess.Popen(cmd)
 
     @pause_on_complete(enable=lambda: VKMusicGetter.pauses)
