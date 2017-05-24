@@ -84,22 +84,24 @@ class VKMusicGetter(object):
         self.press_play()
 
         for _ in range(number):
-            track_performer, track_title = self.get_track_name()
+            track_performer, track_title = self.get_track_perf_and_title()
             try:
                 self.wait.until(lambda _:
                     self.get_track_url(self.proxy.har) is not None
                 )
             except TimeoutException:
+                track_name = "%s - %s" % (track_performer, track_title)
                 self.logger.error("Timeout error while getting url for track %s" % track_name)
             else:
                 track_url = self.get_track_url(self.proxy.har)
                 self.logger.debug("track_url: %s", track_url)
                 self.download_track(track_url, tracks_dir, track_performer, track_title)
             finally:
-                self.press_next()
                 self.proxy.new_har(har_name)
+                self.press_next()
 
     def download_track(self, track_url, tracks_dir, track_performer, track_title):
+        track_name = "%s - %s" % (track_performer, track_title)
         performer_dir = os.path.join(tracks_dir, track_performer)
         if not os.path.exists(performer_dir):
             os.mkdir(performer_dir)
@@ -185,17 +187,17 @@ class VKMusicGetter(object):
             raise
 
     @pause_on_complete(enable=lambda: VKMusicGetter.pauses)
-    def get_track_name(self):
+    def get_track_perf_and_title(self):
         performer_elem = self.driver.find_element_by_css_selector(
             self.conf.VK_PLAYER_CURRENT_SONG_PERFORMER
         )
         performer = performer_elem.get_attribute("textContent")
-        self.logger.info("Performer: %s" % performer)
+        self.logger.debug("Performer: %s" % performer)
         title_elem = self.driver.find_element_by_css_selector(
             self.conf.VK_PLAYER_CURRENT_SONG_TITLE
         )
         title = title_elem.get_attribute("textContent")
-        self.logger.info("Title: %s" % title)
+        self.logger.debug("Title: %s" % title)
         return performer, title[3:] # title[:3] == " - "
 
     @pause_on_complete(enable=lambda: VKMusicGetter.pauses)
