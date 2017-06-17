@@ -1,8 +1,7 @@
 import os
 import logging
 import subprocess
-from .exceptions import LoginFailedException, CantProceedToAudiosException,\
-                        ConfValueIsNoneException
+from .exceptions import LoginFailedException, CantProceedToAudiosException
 from .utils import pause_on_complete, check_configs
 from browsermobproxy import Server
 from selenium import webdriver
