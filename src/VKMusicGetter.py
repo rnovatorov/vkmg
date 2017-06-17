@@ -3,7 +3,7 @@ import logging
 import subprocess
 from .exceptions import LoginFailedException, CantProceedToAudiosException,\
                         ConfValueIsNoneException
-from .utils import pause_on_complete
+from .utils import pause_on_complete, check_configs
 from browsermobproxy import Server
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -15,21 +15,12 @@ class VKMusicGetter(object):
     """
     TODO: Add description
     """
-    pauses = False
+    pauses = False  # Used to toggle utuls.pause_on_complete
 
     def __init__(self, conf):
-        # Configs
-        self.check_configs(conf)
+        check_configs(conf)
         self.conf = conf
-
-        # Logging
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(self.conf.LOG_LEVEL)
-        fh = logging.FileHandler(os.path.join(self.conf.LOG_DIR, "vkmg.log"))
-        fh.setLevel(self.conf.LOG_LEVEL)
-        formatter = logging.Formatter(self.conf.LOG_FORMAT)
-        fh.setFormatter(formatter)
-        self.logger.addHandler(fh)
+        self._init_logger()
 
     def __enter__(self):
         self.start_up()
@@ -63,12 +54,17 @@ class VKMusicGetter(object):
         )
         self.wait = WebDriverWait(self.driver, self.conf.WEBDRIVER_WAIT_TIMEOUT)
 
-    def check_configs(self, conf):
-        attr_names = [an for an in dir(conf) if not an.startswith("__")]
-        for an in attr_names:
-            if getattr(conf, an) is None:
-                raise ConfValueIsNoneException(an)
-        return bool(conf)
+    def _init_logger(self):
+        logger = logging.getLogger(__name__)
+
+        logger.setLevel(self.conf.LOG_LEVEL)
+        fh = logging.FileHandler(os.path.join(self.conf.LOG_DIR, "vkmg.log"))
+        fh.setLevel(self.conf.LOG_LEVEL)
+        formatter = logging.Formatter(self.conf.LOG_FORMAT)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
+
+        self.logger = logger
 
     def get_tracks(self, target_vk_user_id, number, tracks_dir):
         self.logger.info("Getting %d tracks from user %d tracklist"

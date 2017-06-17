@@ -23,9 +23,6 @@ VK_URL = "https://vk.com"
 VK_USER_PHONE = os.environ.get("VK_USER_PHONE")
 VK_USER_PASSWORD = os.environ.get("VK_USER_PASSWORD")
 
-# ID of vk user whose audios are to be downloaded
-VK_TARGET_ID = os.environ.get("VK_TARGET_ID")
-
 # VK elements location (css selectors)
 VK_INDEX_LOGIN_FORM = "#index_login_form"
 VK_INDEX_LOGIN = "#index_email"
