@@ -28,4 +28,3 @@ def check_configs(conf):
     for an in attr_names:
         if getattr(conf, an) is None:
             raise ConfValueIsNoneException(an)
-    return bool(conf)
