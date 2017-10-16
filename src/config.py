@@ -14,7 +14,7 @@ BROWSERMOB_PROXY_BIN_PATH = os.environ.get("BROWSERMOB_PROXY_BIN_PATH")
 FIREFOX_PROFILE_PATH = os.environ.get("FIREFOX_PROFILE_PATH")
 
 # Webdriver wait time out
-WEBDRIVER_WAIT_TIMEOUT = 5
+WEBDRIVER_WAIT_TIMEOUT = 30
 
 # VK main page url
 VK_URL = "https://vk.com"
