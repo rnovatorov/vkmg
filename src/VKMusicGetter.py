@@ -141,6 +141,7 @@ class VKMusicGetter(object):
 
         # Checking if login succeeded
         try:
+            # TODO: Use explicit timeout
             self.wait.until(
                 lambda d: d.find_element_by_css_selector(config.VK_LOGIN_ERROR)
             )
