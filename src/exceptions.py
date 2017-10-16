@@ -1,7 +1,9 @@
-class LoginFailedException(Exception): pass
+class LoginFailedException(Exception):
+    pass
 
 
-class CantProceedToAudiosException(Exception): pass
+class CantProceedToAudiosException(Exception):
+    pass
 
 
 class ConfValueIsNoneException(Exception):
