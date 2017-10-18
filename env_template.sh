@@ -12,3 +12,7 @@ export BROWSERMOB_PROXY_BIN_PATH=""
 
 # Firefox profile path
 export FIREFOX_PROFILE_PATH=""
+
+
+# Geckodriver path
+export PATH=$PATH:$(pwd)

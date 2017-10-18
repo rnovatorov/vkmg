@@ -25,6 +25,13 @@ virtualenv -p $(which python3) venv
 venv/bin/pip install -r requirements.txt
 ```
 
+##### Install Xvfb
+For Ubuntu:
+
+```bash
+sudo apt-get install xvfb
+```
+
 ##### Get Geckodriver
 Download binaries or build from source from
 [here](https://github.com/mozilla/geckodriver/releases).
