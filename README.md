@@ -64,6 +64,10 @@ source env.sh
 ```
 
 ##### Parameters
+`-h / --help`
+
+Show usage.
+
 `-t TARGET_VK_USER_ID / --target TARGET_VK_USER_ID`
 
 ID of vk user whose tracks to get. Int. Required parameter.
