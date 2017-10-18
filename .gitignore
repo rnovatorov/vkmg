@@ -104,7 +104,7 @@ venv.bak/
 .mypy_cache/
 
 # Env vars source
-my_env.sh
+env.sh
 
 # Certificates
 *.cer
