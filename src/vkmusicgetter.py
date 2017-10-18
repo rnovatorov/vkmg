@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from . import config
 from .track import Track
 from .exceptions import LoginFailedException, CannotProceedToAudiosException
-from .utils import check_configs, escape_filename
+from .utils import check_configs
 
 
 class VkMusicGetter(object):
@@ -23,11 +23,10 @@ class VkMusicGetter(object):
         self.init_logger()
 
         # Creating dir to download tracks to
-        escaped = escape_filename(tracks_dir)
-        if not os.path.exists(escaped):
+        if not os.path.exists(tracks_dir):
             self.logger.info("Creating tracks_dir %s", tracks_dir)
-            os.mkdir(escaped)
-        self.tracks_dir = escaped
+            os.mkdir(tracks_dir)
+        self.tracks_dir = tracks_dir
 
     def __enter__(self):
         self.start_up()
