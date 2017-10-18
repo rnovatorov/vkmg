@@ -109,5 +109,11 @@ env.sh
 # Certificates
 *.cer
 
+# Geckodriver
+geckodriver
+
+# Browsermob-Proxy
+browsermob-proxy*/*
+
 # Tracks output directory
 tracks/*
