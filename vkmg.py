@@ -1,12 +1,12 @@
 #! venv/bin/python3
 
 
-from src.VKMusicGetter import VKMusicGetter
+from src.vkmusicgetter import VkMusicGetter
 from argparse import ArgumentParser
 
 
 def main(args):
-    with VKMusicGetter(tracks_dir=args.tracks_dir) as vkmg:
+    with VkMusicGetter(tracks_dir=args.tracks_dir) as vkmg:
         vkmg.login()
         vkmg.get_tracks(
             target_vk_user_id=args.target_vk_user_id,

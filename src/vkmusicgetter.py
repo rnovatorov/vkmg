@@ -8,12 +8,12 @@ from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from . import config
-from .Track import Track
+from .track import Track
 from .exceptions import LoginFailedException, CannotProceedToAudiosException
 from .utils import check_configs
 
 
-class VKMusicGetter(object):
+class VkMusicGetter(object):
     """
     Allows to download music from vk
     """
