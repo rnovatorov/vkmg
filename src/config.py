@@ -5,7 +5,7 @@ import logging
 # Logging
 LOG_LEVEL = logging.DEBUG
 LOG_DIR = "log"
-LOG_FORMAT = "%(asctime)s:%(name)s:%(levelname)s - %(message)s"
+LOG_FORMAT = "%(asctime)s:%(levelname)s - %(message)s"
 
 # Xvfb
 DISPLAY_VISIBLE = 0
