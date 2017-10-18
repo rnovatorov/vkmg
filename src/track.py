@@ -13,11 +13,11 @@ class Track(object):
         self.url = url
 
     def __repr__(self):
-        return "<Track(name='%s')>" % self.name
+        return "<Track(performer='%s', title='%s')>" % (self.performer, self.title)
 
     @property
     def name(self):
-        return "%s - %s" % (self._performer, self._title)
+        return "%s - %s" % (self.performer, self.title)
 
     @property
     @filename_escaped
