@@ -25,7 +25,7 @@ WAIT_ELEMENTS_LOCATION_TIMEOUT = 8
 VK_URL = "https://vk.com"
 
 # VK user credentials
-VK_USER_LOGIN = os.environ.get("VK_USER_PHONE")
+VK_USER_LOGIN = os.environ.get("VK_USER_LOGIN")
 VK_USER_PASSWORD = os.environ.get("VK_USER_PASSWORD")
 
 # VK elements location (css selectors)
