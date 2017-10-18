@@ -7,6 +7,11 @@ from . import config
 def get_tracks(tracks_dir, target_vk_user_id, number):
     try:
         with VkMusicGetter(tracks_dir=tracks_dir) as vkmg:
+            # Approximating size
+            average_song_size_mb = 4
+            approximate_size_gb = (number * average_song_size_mb) / 1024
+            print("%d tracks on average will take %.2f GB" % (number, approximate_size_gb))
+
             print("Getting things ready...")
             vkmg.login()
 
