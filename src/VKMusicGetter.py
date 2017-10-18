@@ -4,9 +4,9 @@ import subprocess
 from urllib.parse import urljoin
 from browsermobproxy import Server
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
-from pyvirtualdisplay import Display
 from . import config
 from .exceptions import LoginFailedException, CannotProceedToAudiosException
 from .utils import check_configs
@@ -58,7 +58,6 @@ class VKMusicGetter(object):
 
     def start_up(self):
         self.logger.info("=== Starting up ===")
-        self.init_xvfb()
         self.init_browsermob()
         self.init_selenium()
 
@@ -66,7 +65,6 @@ class VKMusicGetter(object):
         self.logger.info("=== Tearing down ===")
         self.driver.quit()
         self.server.stop()
-        self.display.stop()
 
     def get_tracks(self, target_vk_user_id, number):
         self.logger.info("Getting %d tracks from user %d track list"
@@ -157,13 +155,6 @@ class VKMusicGetter(object):
         except TimeoutException:
             self.logger.info("Login succeeded")
 
-    def init_xvfb(self):
-        self.display = Display(
-            visible=config.DISPLAY_VISIBLE,
-            size=config.DISPLAY_SIZE
-        )
-        self.display.start()
-
     def init_browsermob(self):
         self.server = Server(config.BROWSERMOB_PROXY_BIN_PATH)
         self.server.start(options={"log_path": config.LOG_DIR})
@@ -173,9 +164,12 @@ class VKMusicGetter(object):
         # Using custom Firefox profile with BrowserMob SSL cert
         profile = webdriver.FirefoxProfile(config.FIREFOX_PROFILE_PATH)
         profile.set_proxy(self.proxy.selenium_proxy())
+        firefox_options = Options()
+        firefox_options.add_argument("--headless")
         self.driver = webdriver.Firefox(
             firefox_profile=profile,
-            log_path=os.path.join(config.LOG_DIR, "geckodriver.log")
+            log_path=os.path.join(config.LOG_DIR, "geckodriver.log"),
+            firefox_options=firefox_options
         )
 
     def init_logger(self):

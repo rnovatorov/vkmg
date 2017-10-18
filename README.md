@@ -1,10 +1,8 @@
 # vkmg
 VK music getter.
 
-Allows to download music from VK by running
+Allows to download music from VK controlling headless Firefox with
 [Selenium](http://docs.seleniumhq.org)
-in
-[Xvfb](https://www.x.org/archive/X11R7.6/doc/man/man1/Xvfb.1.xhtml)
 intercepting AJAX requests for tracks using
 [Browsermob-Proxy](https://github.com/lightbody/browsermob-proxy).
 
@@ -23,13 +21,6 @@ virtualenv -p $(which python3) venv
 ##### Install requirements
 ```bash
 venv/bin/pip install -r requirements.txt
-```
-
-##### Install Xvfb
-For Ubuntu:
-
-```bash
-sudo apt-get install xvfb
 ```
 
 ##### Get Geckodriver
