@@ -59,6 +59,7 @@ class VkMusicGetter(object):
             if current_track.is_already_downloaded:
                 self.start_recording()
                 self.press_next()
+                continue
 
             try:
                 self.wait(config.WAIT_TRACKS_TIMEOUT).until(
