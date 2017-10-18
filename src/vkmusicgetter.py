@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 import subprocess
 from urllib.parse import urljoin
 from browsermobproxy import Server
@@ -24,6 +25,7 @@ class VkMusicGetter(object):
         # Creating dir to download tracks to
         escaped = escape_filename(tracks_dir)
         if not os.path.exists(escaped):
+            self.logger.info("Creating tracks_dir %s", tracks_dir)
             os.mkdir(escaped)
         self.tracks_dir = escaped
 
@@ -35,18 +37,18 @@ class VkMusicGetter(object):
         self.tear_down()
 
     def start_up(self):
-        self.logger.info("=== Starting up ===")
+        self.logger.info("Starting up")
         self.init_browsermob()
         self.init_selenium()
 
     def tear_down(self):
-        self.logger.info("=== Tearing down ===")
+        self.logger.info("Tearing down")
         self.driver.quit()
         self.server.stop()
 
     def get_tracks(self, target_vk_user_id, number):
-        self.logger.info("Getting %d tracks from user %d track list"
-                         % (number, target_vk_user_id))
+        self.logger.info("Planning to get %d tracks from user %d track list",
+                         number, target_vk_user_id)
 
         self.proceed_to_audios(target_vk_user_id)
         self.start_recording()
@@ -57,6 +59,7 @@ class VkMusicGetter(object):
             current_track = self.get_current_track()
 
             if current_track.is_already_downloaded:
+                self.logger.info("Already downloaded")
                 self.start_recording()
                 self.press_next()
                 continue
@@ -66,7 +69,7 @@ class VkMusicGetter(object):
                     lambda _: self.ready_to_download
                 )
             except TimeoutException:
-                self.logger.error("Timeout error while getting url for %s" % current_track)
+                self.logger.error("Timeout error while getting url for %s", current_track)
             else:
                 current_track.url = self.get_current_track_url()
                 self.download_track(current_track)
@@ -80,8 +83,10 @@ class VkMusicGetter(object):
     def download_track(self, track):
         performer_dir = os.path.join(self.tracks_dir, track.performer)
         if not os.path.exists(performer_dir):
+            self.logger.info("Creating performer dir '%s'", performer_dir)
             os.mkdir(performer_dir)
 
+        self.logger.info("Downloading %s", track)
         cmd = ["wget", track.url,
                "-O", track.path,
                "-a", os.path.join(config.LOG_DIR, "wget.log")]
@@ -95,14 +100,14 @@ class VkMusicGetter(object):
                 lambda d: d.find_element_by_css_selector(config.VK_INDEX_LOGIN_FORM)
             )
         except TimeoutException:
-            self.logger.error("'%s' not found" % config.VK_INDEX_LOGIN_FORM)
+            self.logger.error("'%s' not found", config.VK_INDEX_LOGIN_FORM)
             raise
 
         # Login input
         try:
             login = self.driver.find_element_by_css_selector(config.VK_INDEX_LOGIN)
         except NoSuchElementException:
-            self.logger.error("'%s' not found" % config.VK_INDEX_LOGIN)
+            self.logger.error("'%s' not found", config.VK_INDEX_LOGIN)
             raise
         login.clear()
         login.send_keys(config.VK_USER_LOGIN)
@@ -111,7 +116,7 @@ class VkMusicGetter(object):
         try:
             password = self.driver.find_element_by_css_selector(config.VK_INDEX_PASSWORD)
         except NoSuchElementException:
-            self.logger.error("'%s' not found" % config.VK_INDEX_PASSWORD)
+            self.logger.error("'%s' not found", config.VK_INDEX_PASSWORD)
             raise
         password.clear()
         password.send_keys(config.VK_USER_PASSWORD)
@@ -120,7 +125,7 @@ class VkMusicGetter(object):
         try:
             login_button = self.driver.find_element_by_css_selector(config.VK_INDEX_LOGIN_BUTTON)
         except NoSuchElementException:
-            self.logger.error("'%s' not found" % config.VK_INDEX_LOGIN_BUTTON)
+            self.logger.error("'%s' not found", config.VK_INDEX_LOGIN_BUTTON)
             raise
         login_button.click()
 
@@ -135,11 +140,15 @@ class VkMusicGetter(object):
             self.logger.info("Login succeeded")
 
     def init_browsermob(self):
+        self.logger.info("Initing Browsermob")
+
         self.server = Server(config.BROWSERMOB_PROXY_BIN_PATH)
         self.server.start(options={"log_path": config.LOG_DIR})
         self.proxy = self.server.create_proxy()
 
     def init_selenium(self):
+        self.logger.info("Initing Selenium")
+
         # Using custom Firefox profile with BrowserMob SSL cert
         profile = webdriver.FirefoxProfile(config.FIREFOX_PROFILE_PATH)
         profile.set_proxy(self.proxy.selenium_proxy())
@@ -154,11 +163,18 @@ class VkMusicGetter(object):
     def init_logger(self):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(config.LOG_LEVEL)
+
+        formatter = logging.Formatter(config.LOG_FORMAT)
+
         fh = logging.FileHandler(os.path.join(config.LOG_DIR, "vkmg.log"))
         fh.setLevel(config.LOG_LEVEL)
-        formatter = logging.Formatter(config.LOG_FORMAT)
         fh.setFormatter(formatter)
         self.logger.addHandler(fh)
+
+        sh = logging.StreamHandler(stream=sys.stdout)
+        sh.setLevel(config.LOG_LEVEL)
+        sh.setFormatter(formatter)
+        self.logger.addHandler(sh)
 
     def proceed_to_audios(self, target_vk_user_id):
         self.logger.info("Proceeding to user %d tracklist" % target_vk_user_id)
@@ -200,7 +216,7 @@ class VkMusicGetter(object):
 
         track = Track(performer=performer, title=title, tracks_dir=self.tracks_dir)
 
-        self.logger.debug("Track: %s" % track)
+        self.logger.info("Current track: %s" % track)
         return track
 
     def get_current_track_url(self):
