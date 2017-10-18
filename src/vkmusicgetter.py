@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 import subprocess
 from urllib.parse import urljoin
 from browsermobproxy import Server
@@ -8,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
+from tqdm import tqdm
 from . import config
 from .track import Track
 from .exceptions import LoginFailedException, CannotProceedToAudiosException
@@ -21,6 +21,10 @@ class VkMusicGetter(object):
     def __init__(self, tracks_dir):
         check_configs(config)
         self.init_logger()
+
+        # Counting tracks
+        self.tracks = []
+        self.tracks_timed_out = []
 
         # Creating dir to download tracks to
         if not os.path.exists(tracks_dir):
@@ -54,8 +58,9 @@ class VkMusicGetter(object):
         self.press_play()
 
         # Looping over target's track list
-        for _ in range(number):
+        for _ in tqdm(range(number), total=number):
             current_track = self.get_current_track()
+            self.tracks.append(current_track)
 
             if current_track.is_already_downloaded:
                 self.logger.info("Already downloaded")
@@ -69,12 +74,15 @@ class VkMusicGetter(object):
                 )
             except TimeoutException:
                 self.logger.error("Timeout error while getting url for %s", current_track)
+                self.tracks_timed_out.append(current_track)
             else:
                 current_track.url = self.get_current_track_url()
                 self.download_track(current_track)
             finally:
                 self.start_recording()
                 self.press_next()
+
+        return self.tracks
 
     def wait(self, seconds):
         return WebDriverWait(self.driver, seconds)
@@ -164,16 +172,10 @@ class VkMusicGetter(object):
         self.logger.setLevel(config.LOG_LEVEL)
 
         formatter = logging.Formatter(config.LOG_FORMAT)
-
         fh = logging.FileHandler(os.path.join(config.LOG_DIR, "vkmg.log"))
         fh.setLevel(config.LOG_LEVEL)
         fh.setFormatter(formatter)
         self.logger.addHandler(fh)
-
-        sh = logging.StreamHandler(stream=sys.stdout)
-        sh.setLevel(config.LOG_LEVEL)
-        sh.setFormatter(formatter)
-        self.logger.addHandler(sh)
 
     def proceed_to_audios(self, target_vk_user_id):
         self.logger.info("Proceeding to user %d tracklist" % target_vk_user_id)
