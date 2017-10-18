@@ -1,4 +1,5 @@
 import os
+from .utils import filename_escaped
 
 
 class Track(object):
@@ -6,8 +7,8 @@ class Track(object):
     Represent a music track
     """
     def __init__(self, performer, title, tracks_dir, url=None):
-        self.performer = performer
-        self.title = title
+        self._performer = performer
+        self._title = title
         self.tracks_dir = tracks_dir
         self.url = url
 
@@ -16,7 +17,17 @@ class Track(object):
 
     @property
     def name(self):
-        return "%s - %s" % (self.performer, self.title)
+        return "%s - %s" % (self._performer, self._title)
+
+    @property
+    @filename_escaped
+    def performer(self):
+        return self._performer
+
+    @property
+    @filename_escaped
+    def title(self):
+        return self._title
 
     @property
     def path(self):
