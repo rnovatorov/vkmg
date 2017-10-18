@@ -7,14 +7,19 @@ LOG_LEVEL = logging.DEBUG
 LOG_DIR = "log"
 LOG_FORMAT = "%(asctime)s:%(name)s:%(levelname)s - %(message)s"
 
+# Xvfb
+DISPLAY_VISIBLE = 0
+DISPLAY_SIZE = (800, 600)
+
 # Browsermob-proxy binary path
 BROWSERMOB_PROXY_BIN_PATH = os.environ.get("BROWSERMOB_PROXY_BIN_PATH")
 
 # Firefox profile path
 FIREFOX_PROFILE_PATH = os.environ.get("FIREFOX_PROFILE_PATH")
 
-# Webdriver wait time out
-WEBDRIVER_WAIT_TIMEOUT = 30
+# Wait timeouts
+WAIT_TRACKS_TIMEOUT = 16
+WAIT_ELEMENTS_LOCATION_TIMEOUT = 8
 
 # VK main page url
 VK_URL = "https://vk.com"

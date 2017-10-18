@@ -6,8 +6,9 @@ from browsermobproxy import Server
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
+from pyvirtualdisplay import Display
 from . import config
-from .exceptions import LoginFailedException, CantProceedToAudiosException
+from .exceptions import LoginFailedException, CannotProceedToAudiosException
 from .utils import check_configs
 
 
@@ -37,7 +38,7 @@ class Track(object):
 
 class VKMusicGetter(object):
     """
-    Allows to download music from vk.com
+    Allows to download music from vk
     """
     def __init__(self, tracks_dir):
         check_configs(config)
@@ -57,13 +58,15 @@ class VKMusicGetter(object):
 
     def start_up(self):
         self.logger.info("=== Starting up ===")
+        self.init_xvfb()
         self.init_browsermob()
         self.init_selenium()
 
     def tear_down(self):
         self.logger.info("=== Tearing down ===")
-        self.server.stop()
         self.driver.quit()
+        self.server.stop()
+        self.display.stop()
 
     def get_tracks(self, target_vk_user_id, number):
         self.logger.info("Getting %d tracks from user %d track list"
@@ -82,7 +85,9 @@ class VKMusicGetter(object):
                 self.press_next()
 
             try:
-                self.wait.until(lambda _: self.ready_to_download)
+                self.wait(config.WAIT_TRACKS_TIMEOUT).until(
+                    lambda _: self.ready_to_download
+                )
             except TimeoutException:
                 self.logger.error("Timeout error while getting url for %s" % current_track)
             else:
@@ -91,6 +96,9 @@ class VKMusicGetter(object):
             finally:
                 self.start_recording()
                 self.press_next()
+
+    def wait(self, seconds):
+        return WebDriverWait(self.driver, seconds)
 
     def download_track(self, track):
         performer_dir = os.path.join(self.tracks_dir, track.performer)
@@ -106,7 +114,7 @@ class VKMusicGetter(object):
         self.logger.info("Trying to log in")
         self.driver.get(config.VK_URL)
         try:
-            self.wait.until(
+            self.wait(config.WAIT_ELEMENTS_LOCATION_TIMEOUT).until(
                 lambda d: d.find_element_by_css_selector(config.VK_INDEX_LOGIN_FORM)
             )
         except TimeoutException:
@@ -141,14 +149,20 @@ class VKMusicGetter(object):
 
         # Checking if login succeeded
         try:
-            # TODO: Use explicit timeout
-            self.wait.until(
+            self.wait(config.WAIT_ELEMENTS_LOCATION_TIMEOUT).until(
                 lambda d: d.find_element_by_css_selector(config.VK_LOGIN_ERROR)
             )
             self.logger.error("Login failed")
             raise LoginFailedException
         except TimeoutException:
             self.logger.info("Login succeeded")
+
+    def init_xvfb(self):
+        self.display = Display(
+            visible=config.DISPLAY_VISIBLE,
+            size=config.DISPLAY_SIZE
+        )
+        self.display.start()
 
     def init_browsermob(self):
         self.server = Server(config.BROWSERMOB_PROXY_BIN_PATH)
@@ -163,7 +177,6 @@ class VKMusicGetter(object):
             firefox_profile=profile,
             log_path=os.path.join(config.LOG_DIR, "geckodriver.log")
         )
-        self.wait = WebDriverWait(self.driver, config.WEBDRIVER_WAIT_TIMEOUT)
 
     def init_logger(self):
         self.logger = logging.getLogger(__name__)
@@ -179,9 +192,10 @@ class VKMusicGetter(object):
         url = urljoin(config.VK_URL, "audios%d" % target_vk_user_id)
         self.driver.get(url)
         if self.driver.current_url != url:
-            self.logger.error("Can not proceed to audios: instead of %s got %s"
-                               % (url, self.driver.current_url))
-            raise CantProceedToAudiosException
+            msg = ("Cannot proceed to audios: instead of %s got %s"
+                   % (url, self.driver.current_url))
+            self.logger.error(msg)
+            raise CannotProceedToAudiosException(msg)
 
     def press_play(self):
         try:
