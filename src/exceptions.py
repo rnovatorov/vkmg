@@ -2,7 +2,7 @@ class LoginFailedException(Exception):
     pass
 
 
-class CantProceedToAudiosException(Exception):
+class CannotProceedToAudiosException(Exception):
     pass
 
 
