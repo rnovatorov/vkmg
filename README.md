@@ -77,4 +77,4 @@ If the directory does not exist, it will be created.
 
 `-n NUMBER / --number NUMBER`
 
-Number of tracks to get. Int. Defaults to 3.
+Number of tracks to get. Int. Defaults to `3`.
