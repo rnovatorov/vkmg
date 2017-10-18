@@ -128,7 +128,7 @@ class VKMusicGetter(object):
             self.logger.error("'%s' not found" % config.VK_INDEX_LOGIN)
             raise
         login.clear()
-        login.send_keys(config.VK_USER_PHONE)
+        login.send_keys(config.VK_USER_LOGIN)
 
         # Password input
         try:
