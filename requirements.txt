@@ -5,4 +5,5 @@ EasyProcess==0.2.3
 idna==2.6
 requests==2.18.4
 selenium==3.6.0
+tqdm==4.19.4
 urllib3==1.22
