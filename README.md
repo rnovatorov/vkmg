@@ -7,9 +7,9 @@ intercepting AJAX requests for tracks using
 [Browsermob-Proxy](https://github.com/lightbody/browsermob-proxy).
 
 ## Prerequisites
-- linux box
-- java
-- python3
+- Linux box
+- Java
+- Python 3
 
 ## Installation
 
