@@ -6,6 +6,11 @@ Allows to download music from VK controlling headless Firefox with
 intercepting AJAX requests for tracks using
 [Browsermob-Proxy](https://github.com/lightbody/browsermob-proxy).
 
+## Prerequisites
+- linux box
+- java
+- python3
+
 ## Installation
 
 ##### Get project
@@ -49,9 +54,7 @@ or make your own.
 mv env_template.sh env.sh
 ```
 
-2. Set vars in
-[env.sh](env.sh)
-using your favorite text editor.
+2. Set adequate vars in env.sh using your favorite text editor.
 
 3. Export them to current terminal session:
 ```bash
