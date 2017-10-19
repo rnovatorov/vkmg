@@ -22,10 +22,8 @@ def get_tracks(tracks_dir, target_vk_user_id, number):
                 number=number
             )
 
-            tracks_not_downloaded = []
-            for track in tracks:
-                if not os.path.exists(track.path):
-                    tracks_not_downloaded.append(track)
+            tracks_not_downloaded = [track for track in tracks
+                                     if not os.path.exists(track.path)]
     except Exception as e:
         print("Exception occurred: %s" % e)
         print("For details refer to %s/vkmg.log" % config.LOG_DIR)

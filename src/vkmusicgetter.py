@@ -40,12 +40,12 @@ class VkMusicGetter(object):
         self.tear_down()
 
     def start_up(self):
-        self.logger.info("Starting up")
+        self.logger.info("=== Starting up ===")
         self.init_browsermob()
         self.init_selenium()
 
     def tear_down(self):
-        self.logger.info("Tearing down")
+        self.logger.info("=== Tearing down ===")
         self.driver.quit()
         self.server.stop()
 
