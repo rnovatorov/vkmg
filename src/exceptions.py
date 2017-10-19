@@ -1,9 +1,18 @@
 class LoginFailedException(Exception):
-    pass
+
+    def __str__(self):
+        return "Login failed"
 
 
 class CannotProceedToAudiosException(Exception):
-    pass
+
+    def __init__(self, expected, got):
+        self.expected = expected
+        self.got = got
+
+    def __str__(self):
+        return ("Cannot proceed to audios: instead of %s got %s"
+                % (self.expected, self.got))
 
 
 class ConfValueIsNoneException(Exception):

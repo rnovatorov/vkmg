@@ -182,10 +182,10 @@ class VkMusicGetter(object):
         url = urljoin(config.VK_URL, "audios%d" % target_vk_user_id)
         self.driver.get(url)
         if self.driver.current_url != url:
-            msg = ("Cannot proceed to audios: instead of %s got %s"
-                   % (url, self.driver.current_url))
-            self.logger.error(msg)
-            raise CannotProceedToAudiosException(msg)
+            raise CannotProceedToAudiosException(
+                expected=url,
+                got=self.driver.current_url
+            )
 
     def press_play(self):
         try:
