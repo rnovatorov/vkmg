@@ -23,3 +23,11 @@ def filename_escaped(func):
     def wrapper(*args, **kwargs):
         return escape_filename(func(*args, **kwargs))
     return wrapper
+
+
+def posint(x):
+    i = int(x)
+    if i <= 0:
+        raise TypeError("%s in not a positive integer" % x)
+    else:
+        return i

@@ -2,6 +2,7 @@
 
 
 from src import get_tracks
+from src.utils import posint
 from argparse import ArgumentParser
 
 
@@ -32,7 +33,7 @@ if __name__ == "__main__":
     arg_parser.add_argument(
         "-n", "--number",
         dest="number",
-        type=int,
+        type=posint,
         required=False,
         default=3,
         help="number of tracks to get"
