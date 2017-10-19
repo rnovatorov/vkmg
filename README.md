@@ -10,7 +10,6 @@ intercepting AJAX requests for tracks using
 - Linux box
 - Java
 - Python 3
-- Virtualenv
 
 ## Installation
 
