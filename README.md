@@ -49,9 +49,9 @@ or make your own.
 
 ## Configuration
 ##### Set env vars
-1. Rename env_template.sh to env.sh
+1. Create a copy of env_template.sh named env.sh
 ```bash
-mv env_template.sh env.sh
+cp env_template.sh env.sh
 ```
 
 2. Set adequate vars in env.sh using your favorite text editor.
