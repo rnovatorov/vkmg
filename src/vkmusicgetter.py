@@ -1,13 +1,13 @@
 import logging
 import os
 import subprocess
+from tqdm import tqdm
 from urllib.parse import urljoin
 from browsermobproxy import Server
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
-from tqdm import tqdm
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from . import config
 from .track import Track
 from .exceptions import LoginFailedException, CannotProceedToAudiosException
@@ -107,14 +107,14 @@ class VkMusicGetter(object):
                 lambda d: d.find_element_by_css_selector(config.VK_INDEX_LOGIN_FORM)
             )
         except TimeoutException:
-            self.logger.error("'%s' not found", config.VK_INDEX_LOGIN_FORM)
+            self.logger.exception("'%s' not found", config.VK_INDEX_LOGIN_FORM)
             raise
 
         # Login input
         try:
             login = self.driver.find_element_by_css_selector(config.VK_INDEX_LOGIN)
         except NoSuchElementException:
-            self.logger.error("'%s' not found", config.VK_INDEX_LOGIN)
+            self.logger.exception("'%s' not found", config.VK_INDEX_LOGIN)
             raise
         login.clear()
         login.send_keys(config.VK_USER_LOGIN)
@@ -123,7 +123,7 @@ class VkMusicGetter(object):
         try:
             password = self.driver.find_element_by_css_selector(config.VK_INDEX_PASSWORD)
         except NoSuchElementException:
-            self.logger.error("'%s' not found", config.VK_INDEX_PASSWORD)
+            self.logger.exception("'%s' not found", config.VK_INDEX_PASSWORD)
             raise
         password.clear()
         password.send_keys(config.VK_USER_PASSWORD)
@@ -132,7 +132,7 @@ class VkMusicGetter(object):
         try:
             login_button = self.driver.find_element_by_css_selector(config.VK_INDEX_LOGIN_BUTTON)
         except NoSuchElementException:
-            self.logger.error("'%s' not found", config.VK_INDEX_LOGIN_BUTTON)
+            self.logger.exception("'%s' not found", config.VK_INDEX_LOGIN_BUTTON)
             raise
         login_button.click()
 
@@ -192,7 +192,7 @@ class VkMusicGetter(object):
             play_button = self.driver.find_element_by_css_selector(config.VK_PLAYER_PLAY)
             play_button.click()
         except NoSuchElementException:
-            self.logger.error("'%s' not found" % config.VK_PLAYER_PLAY)
+            self.logger.exception("'%s' not found" % config.VK_PLAYER_PLAY)
             raise
 
     def press_next(self):
@@ -200,7 +200,7 @@ class VkMusicGetter(object):
             next_button = self.driver.find_element_by_css_selector(config.VK_PLAYER_NEXT)
             next_button.click()
         except NoSuchElementException:
-            self.logger.error("'%s' not found" % config.VK_PLAYER_NEXT)
+            self.logger.exception("'%s' not found" % config.VK_PLAYER_NEXT)
             raise
 
     def get_current_track(self):

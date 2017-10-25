@@ -11,14 +11,13 @@ class CannotProceedToAudiosException(Exception):
         self.got = got
 
     def __str__(self):
-        return ("Cannot proceed to audios: instead of %s got %s"
-                % (self.expected, self.got))
+        return "Instead of %s got %s" % (self.expected, self.got)
 
 
-class ConfValueIsNoneException(Exception):
+class ConfigValueIsNoneException(Exception):
 
     def __init__(self, attr_name):
         self.attr_name = attr_name
 
     def __str__(self):
-        return "conf.%s is not set" % self.attr_name
+        return "config.%s can not be None" % self.attr_name

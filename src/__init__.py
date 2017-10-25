@@ -1,11 +1,11 @@
 import os
+import sys
 from pprint import pprint
 from .vkmusicgetter import VkMusicGetter
 from . import config
 
 
 def get_tracks(tracks_dir, target_vk_user_id, number):
-    # Approximating size
     average_song_size_mb = 4
     approximate_size_gb = (number * average_song_size_mb) / 1024
     print("%d tracks on average will take %.2f GB." % (number, approximate_size_gb))
@@ -22,14 +22,17 @@ def get_tracks(tracks_dir, target_vk_user_id, number):
                 number=number
             )
 
-            tracks_not_downloaded = [track for track in tracks
-                                     if not os.path.exists(track.path)]
+            tracks_not_downloaded = [
+                track for track in tracks
+                if not os.path.exists(track.path)
+            ]
     except Exception as e:
         print("Exception occurred: %s" % e)
         print("For details refer to %s/vkmg.log" % config.LOG_DIR)
+        sys.exit(1)
+
+    if tracks_not_downloaded:
+        print("The following tracks were not downloaded:")
+        pprint(tracks_not_downloaded)
     else:
-        if tracks_not_downloaded:
-            print("The following tracks were not downloaded:")
-            pprint(tracks_not_downloaded)
-        else:
-            print("All tracks were successfully downloaded.")
+        print("All tracks were successfully downloaded.")
