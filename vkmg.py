@@ -1,9 +1,9 @@
 #! venv/bin/python3
 
 
+from argparse import ArgumentParser
 from src import get_tracks
 from src.utils import posint
-from argparse import ArgumentParser
 
 
 def main(args):
