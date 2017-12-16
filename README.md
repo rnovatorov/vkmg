@@ -20,7 +20,7 @@ git clone https://github.com/Suenweek/vkmg.git
 
 ##### Create virtual environment
 ```bash
-virtualenv -p $(which python3) venv
+virtualenv -p python3 venv
 ```
 
 ##### Install requirements
