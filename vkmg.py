@@ -1,17 +1,41 @@
 #! venv/bin/python3
 
 
-from src import get_tracks
+import os
+from pprint import pprint
 from src.utils import posint
+from src.vkmusicgetter import VkMusicGetter
 from argparse import ArgumentParser
 
 
 def main(args):
-    get_tracks(
-        tracks_dir=args.tracks_dir,
-        target_vk_user_id=args.target_vk_user_id,
-        number=args.number
-    )
+    average_song_size_mb = 4
+    approximate_size_gb = (args.number * average_song_size_mb) / 1024
+    print("%d tracks on average will take %.2f GB."
+          % (args.number, approximate_size_gb))
+
+    print("Getting things ready...")
+    with VkMusicGetter(tracks_dir=args.tracks_dir) as vkmg:
+        print("Logging in...")
+        vkmg.login()
+
+        print("Starting download...")
+        tracks = vkmg.get_tracks(
+            target_vk_user_id=args.target_vk_user_id,
+            number=args.number
+        )
+
+        tracks_not_downloaded = [
+            track for track in tracks
+            if not os.path.exists(track.path)
+        ]
+
+    if tracks_not_downloaded:
+        print("The following tracks were not downloaded:")
+        pprint(tracks_not_downloaded)
+    else:
+        print("All tracks were successfully downloaded.")
+
 
 
 if __name__ == "__main__":
