@@ -1,8 +1,8 @@
 import logging
 import os
 import subprocess
-from tqdm import tqdm
 from urllib.parse import urljoin
+from tqdm import tqdm
 from browsermobproxy import Server
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options

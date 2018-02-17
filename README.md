@@ -20,7 +20,7 @@ git clone https://github.com/Suenweek/vkmg.git
 
 ##### Create virtual environment
 ```bash
-virtualenv -p $(which python3) venv
+virtualenv -p python3 venv
 ```
 
 ##### Install requirements
@@ -49,12 +49,12 @@ or make your own.
 
 ## Configuration
 ##### Set env vars
-1. Create a copy of env_template.sh named env.sh
+1. Create a copy of `env_template.sh` named `env.sh`
 ```bash
 cp env_template.sh env.sh
 ```
 
-2. Set adequate vars in env.sh using your favorite text editor.
+2. Set adequate vars in `env.sh` using your favorite text editor.
 
 3. Export them to current terminal session:
 ```bash
