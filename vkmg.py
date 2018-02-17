@@ -3,9 +3,9 @@
 
 import os
 from pprint import pprint
+from argparse import ArgumentParser
 from src.utils import posint
 from src.vkmusicgetter import VkMusicGetter
-from argparse import ArgumentParser
 
 
 def main(args):
@@ -35,7 +35,6 @@ def main(args):
         pprint(tracks_not_downloaded)
     else:
         print("All tracks were successfully downloaded.")
-
 
 
 if __name__ == "__main__":
