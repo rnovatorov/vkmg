@@ -108,12 +108,14 @@ venv.bak/
 
 # Env vars source
 env.sh
+env.bat
 
 # Certificates
 *.cer
 
 # Geckodriver
 geckodriver
+geckodriver.exe
 
 # Browsermob-Proxy
 browsermob-proxy*/*

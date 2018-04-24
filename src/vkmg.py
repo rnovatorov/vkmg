@@ -1,6 +1,7 @@
 import os
 import logging
-import subprocess
+import threading
+import requests
 from urllib.parse import urljoin
 from tqdm import tqdm
 from browsermobproxy import Server
@@ -11,15 +12,15 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from . import config
 from .track import Track
 from .exceptions import LoginFailedException, CannotProceedToAudiosException
-from .utils import check_configs
+from .utils import check_config
 
 
 class VkMusicGetter(object):
     """
-    Allows to download music from vk
+    Downloads music from vk.
     """
     def __init__(self, tracks_dir):
-        check_configs(config)
+        check_config(config)
         self.init_logger()
 
         # Counting tracks
@@ -40,12 +41,12 @@ class VkMusicGetter(object):
         self.tear_down()
 
     def start_up(self):
-        self.logger.info("=== Starting up ===")
+        self.logger.info("=== Start up ===")
         self.init_browsermob()
         self.init_selenium()
 
     def tear_down(self):
-        self.logger.info("=== Tearing down ===")
+        self.logger.info("=== Tear down ===")
         self.driver.quit()
         self.server.stop()
 
@@ -93,11 +94,13 @@ class VkMusicGetter(object):
             self.logger.info("Creating performer dir '%s'", performer_dir)
             os.mkdir(performer_dir)
 
+        def target():
+            with open(track.path, "wb") as f:
+                response = requests.get(track.url)
+                f.write(response.content)
+
         self.logger.info("Downloading %s", track)
-        cmd = ["wget", track.url,
-               "-O", track.path,
-               "-a", os.path.join(config.LOG_DIR, "wget.log")]
-        subprocess.Popen(cmd)
+        threading.Thread(target=target).start()
 
     def login(self):
         self.logger.info("Trying to log in")
@@ -160,7 +163,8 @@ class VkMusicGetter(object):
         profile = webdriver.FirefoxProfile(config.FIREFOX_PROFILE_PATH)
         profile.set_proxy(self.proxy.selenium_proxy())
         firefox_options = Options()
-        firefox_options.add_argument("--headless")
+        # FIXME: Make headless again
+        # firefox_options.add_argument("--headless")
         self.driver = webdriver.Firefox(
             firefox_profile=profile,
             log_path=os.path.join(config.LOG_DIR, "geckodriver.log"),
@@ -178,7 +182,7 @@ class VkMusicGetter(object):
         self.logger.addHandler(fh)
 
     def proceed_to_audios(self, target_vk_user_id):
-        self.logger.info("Proceeding to user %d tracklist" % target_vk_user_id)
+        self.logger.info("Proceeding to user %d tracklist", target_vk_user_id)
         url = urljoin(config.VK_URL, "audios%d" % target_vk_user_id)
         self.driver.get(url)
         if self.driver.current_url != url:
@@ -192,7 +196,7 @@ class VkMusicGetter(object):
             play_button = self.driver.find_element_by_css_selector(config.VK_PLAYER_PLAY)
             play_button.click()
         except NoSuchElementException:
-            self.logger.exception("'%s' not found" % config.VK_PLAYER_PLAY)
+            self.logger.exception("'%s' not found", config.VK_PLAYER_PLAY)
             raise
 
     def press_next(self):
@@ -200,7 +204,7 @@ class VkMusicGetter(object):
             next_button = self.driver.find_element_by_css_selector(config.VK_PLAYER_NEXT)
             next_button.click()
         except NoSuchElementException:
-            self.logger.exception("'%s' not found" % config.VK_PLAYER_NEXT)
+            self.logger.exception("'%s' not found", config.VK_PLAYER_NEXT)
             raise
 
     def get_current_track(self):
@@ -217,7 +221,7 @@ class VkMusicGetter(object):
 
         track = Track(performer=performer, title=title, tracks_dir=self.tracks_dir)
 
-        self.logger.info("Current track: %s" % track)
+        self.logger.info("Current track: %s", track)
         return track
 
     def get_current_track_url(self):

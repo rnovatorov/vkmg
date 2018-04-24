@@ -7,10 +7,6 @@ LOG_LEVEL = logging.DEBUG
 LOG_DIR = "log"
 LOG_FORMAT = "%(asctime)s:%(levelname)s - %(message)s"
 
-# Xvfb
-DISPLAY_VISIBLE = 0
-DISPLAY_SIZE = (800, 600)
-
 # Browsermob-proxy binary path
 BROWSERMOB_PROXY_BIN_PATH = os.environ.get("BROWSERMOB_PROXY_BIN_PATH")
 

@@ -1,19 +1,13 @@
 #! venv/bin/python3
 
-
 import os
 from pprint import pprint
 from argparse import ArgumentParser
-from src.utils import posint
-from src.vkmusicgetter import VkMusicGetter
+from src.utils import positive_int
+from src.vkmg import VkMusicGetter
 
 
 def main(args):
-    average_song_size_mb = 4
-    approximate_size_gb = (args.number * average_song_size_mb) / 1024
-    print("%d tracks on average will take %.2f GB."
-          % (args.number, approximate_size_gb))
-
     print("Getting things ready...")
     with VkMusicGetter(tracks_dir=args.tracks_dir) as vkmg:
         print("Logging in...")
@@ -25,16 +19,18 @@ def main(args):
             number=args.number
         )
 
+        print("Validating download...")
         tracks_not_downloaded = [
             track for track in tracks
             if not os.path.exists(track.path)
         ]
 
+    n_tracks_not_downloaded = len(tracks_not_downloaded)
+    n_tracks_downloaded = args.number - n_tracks_not_downloaded
+    print("%d tracks were downloaded." % n_tracks_downloaded)
     if tracks_not_downloaded:
-        print("The following tracks were not downloaded:")
+        print("%d tracks were NOT downloaded:" % n_tracks_not_downloaded)
         pprint(tracks_not_downloaded)
-    else:
-        print("All tracks were successfully downloaded.")
 
 
 if __name__ == "__main__":
@@ -56,9 +52,9 @@ if __name__ == "__main__":
     arg_parser.add_argument(
         "-n", "--number",
         dest="number",
-        type=posint,
+        type=positive_int,
         required=False,
-        default=3,
+        default=10,
         help="number of tracks to get"
     )
     main(arg_parser.parse_args())
